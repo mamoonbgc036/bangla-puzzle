@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'ShopNest') — Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --sidebar-w: 252px;
+            --topbar-h: 62px;
+            --bg-base:    #f4f6fb;
+            --bg-card:    #ffffff;
+            --bg-sidebar: #12131a;
+            --accent:     #6C63FF;
+            --accent-lt:  #ede9ff;
+            --accent-dk:  #5348e0;
+            --success:    #22c55e;
+            --warning:    #f59e0b;
+            --danger:     #ef4444;
+            --info:       #3b82f6;
+            --text:       #111827;
+            --text-md:    #4b5563;
+            --text-sm:    #9ca3af;
+            --border:     #e5e7eb;
+            --shadow-sm:  0 1px 3px rgba(0,0,0,.06);
+            --radius-sm:  8px;
+            --radius-md:  12px;
+            --radius-lg:  16px;
+        }
+        html, body { height: 100%; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-base); color: var(--text); display: flex; font-size: 14px; }
+        a { text-decoration: none; color: inherit; }
+
+        /* SIDEBAR */
+        .sidebar { width: var(--sidebar-w); min-height: 100vh; background: var(--bg-sidebar); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; }
+        .sidebar-brand { height: var(--topbar-h); display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid rgba(255,255,255,.06); }
+        .brand-icon { width: 34px; height: 34px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #fff; flex-shrink: 0; }
+        .brand-name { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+        .brand-name span { color: var(--accent); }
+        .sidebar-nav { flex: 1; padding: 18px 10px; overflow-y: auto; }
+        .nav-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.25); padding: 0 10px; margin: 0 0 8px; }
+        .nav-label:not(:first-child) { margin-top: 22px; }
+        .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 11px; border-radius: var(--radius-sm); color: rgba(255,255,255,.45); font-size: .82rem; font-weight: 500; cursor: pointer; transition: all .15s; margin-bottom: 2px; }
+        .nav-item i { font-size: 14px; width: 16px; text-align: center; flex-shrink: 0; }
+        .nav-item:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.85); }
+        .nav-item.active { background: var(--accent); color: #fff; }
+        .nav-badge { margin-left: auto; background: rgba(255,255,255,.12); color: rgba(255,255,255,.65); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 99px; }
+        .nav-item.active .nav-badge { background: rgba(255,255,255,.22); color: #fff; }
+        .sidebar-footer { padding: 14px 10px; border-top: 1px solid rgba(255,255,255,.06); }
+        .sidebar-user { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--radius-sm); }
+        .user-avatar { width: 32px; height: 32px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0; }
+        .user-name { font-size: .8rem; font-weight: 600; color: #fff; }
+        .user-role { font-size: .7rem; color: rgba(255,255,255,.35); }
+
+        /* MAIN */
+        .main-wrap { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* TOPBAR */
+        .topbar { height: var(--topbar-h); background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 26px; gap: 12px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+        .topbar-title { font-size: .95rem; font-weight: 700; flex: 1; }
+        .topbar-search { display: flex; align-items: center; gap: 8px; background: var(--bg-base); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0 12px; height: 36px; width: 200px; }
+        .topbar-search i { color: var(--text-sm); font-size: 12px; }
+        .topbar-search input { border: none; background: none; outline: none; font-family: inherit; font-size: .82rem; color: var(--text); width: 100%; }
+
+        /* PAGE */
+        .page-content { padding: 26px; flex: 1; }
+        .alert { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: 18px; font-size: .85rem; font-weight: 500; }
+        .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+        .alert-danger   { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+
+        .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+        .page-header-left h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.4px; }
+        .page-header-left p  { font-size: .78rem; color: var(--text-sm); margin-top: 2px; }
+
+        .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--text-sm); margin-bottom: 16px; }
+        .breadcrumb a { color: var(--accent); }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb-sep { color: var(--border); }
+
+        /* BUTTONS */
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-sm); font-size: .82rem; font-weight: 600; cursor: pointer; border: none; transition: all .15s; font-family: inherit; white-space: nowrap; }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent-dk); }
+        .btn-secondary { background: #fff; color: var(--text-md); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--bg-base); }
+        .btn-danger { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+        .btn-danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+        .btn-sm { padding: 5px 10px; font-size: .76rem; }
+        .btn-success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+        /* CARD */
+        .card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
+        .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .card-title { font-size: .9rem; font-weight: 700; }
+        .card-body { padding: 20px; }
+
+        /* TABLE */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { padding: 10px 16px; text-align: left; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-sm); background: #f9fafb; border-bottom: 1px solid var(--border); }
+        tbody td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: .83rem; vertical-align: middle; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: #fafbfe; }
+
+        /* BADGES */
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 99px; font-size: .7rem; font-weight: 600; }
+        .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+        .badge-success { background: #f0fdf4; color: #16a34a; }
+        .badge-danger  { background: #fef2f2; color: #dc2626; }
+
+        /* FORMS */
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: .76rem; font-weight: 600; color: var(--text-md); margin-bottom: 5px; }
+        input[type="text"], input[type="number"], input[type="file"], select, textarea { width: 100%; padding: 9px 13px; background: var(--bg-base); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: inherit; font-size: .875rem; transition: all .15s; outline: none; }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-lt); }
+        input.is-invalid, select.is-invalid, textarea.is-invalid { border-color: var(--danger); box-shadow: 0 0 0 3px #fee2e2; }
+        .invalid-feedback { color: var(--danger); font-size: .72rem; margin-top: 4px; display: flex; align-items: center; gap: 3px; }
+        textarea { resize: vertical; min-height: 96px; }
+        .form-hint { font-size: .7rem; color: var(--text-sm); margin-top: 4px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media(max-width:640px){ .form-row { grid-template-columns: 1fr; } }
+
+        /* TOGGLE */
+        .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+        .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 99px; cursor: pointer; transition: .2s; }
+        .toggle-slider:before { content: ''; position: absolute; width: 15px; height: 15px; left: 3px; top: 50%; transform: translateY(-50%); background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+        .toggle input:checked + .toggle-slider { background: var(--accent); }
+        .toggle input:checked + .toggle-slider:before { left: 22px; }
+        .toggle-label { font-size: .83rem; color: var(--text-md); font-weight: 500; }
+
+        /* STAT CARDS */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 22px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+        .stat-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 14px; }
+        .stat-label { font-size: .7rem; font-weight: 700; color: var(--text-sm); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+        .stat-value { font-size: 1.65rem; font-weight: 800; letter-spacing: -.5px; }
+
+        /* MISC */
+        .actions { display: flex; gap: 5px; align-items: center; }
+        .thumb { width: 42px; height: 42px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-base); }
+        .thumb-placeholder { width: 42px; height: 42px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-base); display: flex; align-items: center; justify-content: center; color: var(--text-sm); font-size: 15px; }
+        .price-new { font-weight: 700; color: var(--accent); }
+        .price-old { font-size: .76rem; color: var(--text-sm); text-decoration: line-through; }
+        .pill-discount { display: inline-block; padding: 1px 6px; background: #fef9c3; color: #854d0e; border-radius: 5px; font-size: .68rem; font-weight: 700; }
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-sm); }
+        .empty-icon { width: 52px; height: 52px; background: var(--bg-base); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text-sm); margin: 0 auto 12px; }
+        .empty-state h3 { font-size: .9rem; font-weight: 600; color: var(--text-md); margin-bottom: 4px; }
+        .empty-state p { font-size: .8rem; }
+        .pagination { display: flex; gap: 4px; margin-top: 18px; justify-content: center; }
+        .pagination a, .pagination span { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: var(--radius-sm); font-size: .8rem; font-weight: 500; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-md); transition: all .15s; }
+        .pagination a:hover { border-color: var(--accent); color: var(--accent); }
+        .pagination .active span { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .detail-grid { display: grid; grid-template-columns: 280px 1fr; gap: 18px; align-items: start; }
+        @media(max-width:900px){ .detail-grid { grid-template-columns: 1fr; } }
+        .meta-row { display: flex; padding: 9px 0; border-bottom: 1px solid var(--border); align-items: flex-start; gap: 12px; }
+        .meta-row:last-child { border-bottom: none; }
+        .meta-key { font-size: .72rem; font-weight: 700; color: var(--text-sm); width: 130px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .04em; }
+        .meta-val { font-size: .85rem; color: var(--text); }
+        .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+        .filter-bar input[type="text"], .filter-bar select { height: 36px; padding: 0 11px; max-width: 200px; }
+    </style>
+    @stack('styles')
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon"><i class="fas fa-store"></i></div>
+        <div class="brand-name">Shop<span>Nest</span></div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-label">Main Menu</div>
+        <a href="{{ route('products.index') }}" class="nav-item {{ request()->routeIs('products.*') ? 'active' : '' }}">
+            <i class="fas fa-box-open"></i> Products
+            @php $pc = \App\Models\Product::count(); @endphp
+            @if($pc) <span class="nav-badge">{{ $pc }}</span> @endif
+        </a>
+        <a href="{{ route('categories.index') }}" class="nav-item {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+            <i class="fas fa-layer-group"></i> Categories
+            @php $cc = \App\Models\Category::count(); @endphp
+            @if($cc) <span class="nav-badge">{{ $cc }}</span> @endif
+        </a>
+        <a href="{{ route('subcategories.index') }}" class="nav-item {{ request()->routeIs('subcategories.*') ? 'active' : '' }}">
+            <i class="fas fa-sitemap"></i> Subcategories
+            @php $sc = \App\Models\Subcategory::count(); @endphp
+            @if($sc) <span class="nav-badge">{{ $sc }}</span> @endif
+        </a>
+        <div class="nav-label">Quick Add</div>
+        <a href="{{ route('products.create') }}" class="nav-item {{ request()->is('products/create') ? 'active' : '' }}">
+            <i class="fas fa-plus-circle"></i> Add Product
+        </a>
+        <a href="{{ route('categories.create') }}" class="nav-item {{ request()->is('categories/create') ? 'active' : '' }}">
+            <i class="fas fa-folder-plus"></i> Add Category
+        </a>
+        <a href="{{ route('subcategories.create') }}" class="nav-item {{ request()->is('subcategories/create') ? 'active' : '' }}">
+            <i class="fas fa-code-branch"></i> Add Subcategory
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <div class="user-avatar">AD</div>
+            <div>
+                <div class="user-name">Admin</div>
+                <div class="user-role">ShopNest Admin</div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<div class="main-wrap">
+    <header class="topbar">
+        <div class="topbar-title">@yield('topbar-title', 'Dashboard')</div>
+        <div class="topbar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Quick search...">
+        </div>
+        <a href="{{ route('products.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> New Product
+        </a>
+    </header>
+    <main class="page-content">
+        @if(session('success'))
+            <div class="alert alert-success"><i class="fas fa-circle-check"></i> {{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger"><i class="fas fa-circle-exclamation"></i> {{ session('error') }}</div>
+        @endif
+        @yield('content')
+    </main>
+</div>
+
+@stack('scripts')
+<script>
+document.querySelectorAll('form[data-confirm]').forEach(f => {
+    f.addEventListener('submit', e => { if (!confirm(f.dataset.confirm)) e.preventDefault(); });
+});
+</script>
+</body>
+</html>
