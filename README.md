@@ -1,12 +1,24 @@
-# ShopNest — Laravel E-Commerce Platform
+# BanglaPuzzle — Laravel E-Commerce Platform
 
 A simplified e-commerce platform built with Laravel featuring full CRUD operations for Categories, Subcategories, and Products. Submitted for the Mid Laravel Developer position at Bangla Puzzle Limited.
 
 ---
 
-Live Demo
+<div align="center">
 
-🔗 Live Website: https://gngtexint.com/
+## Live Demo
+
+### Explore the dashboard in action
+
+<a href="https://gngtexint.com/" target="_blank">
+  <img src="https://img.shields.io/badge/Visit%20Live%20Website-0EA5E9?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Visit Live Website">
+</a>
+
+**Live URL:** [https://gngtexint.com/](https://gngtexint.com/)
+
+`Products` &nbsp;&bull;&nbsp; `Categories` &nbsp;&bull;&nbsp; `Subcategories` &nbsp;&bull;&nbsp; `CRUD Dashboard`
+
+</div>
 
 ## Table of Contents
 
