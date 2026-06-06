@@ -1,6 +1,6 @@
 # BanglaPuzzle — Laravel E-Commerce Platform
 
-A simplified e-commerce platform built with Laravel featuring full CRUD operations for Categories, Subcategories, and Products. Submitted for the Mid Laravel Developer position at Bangla Puzzle Limited.
+A simplified e-commerce platform built with Laravel featuring full CRUD operations for Categories, Subcategories, and Products.
 
 ---
 
