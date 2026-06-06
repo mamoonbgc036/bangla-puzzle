@@ -4,6 +4,10 @@ A simplified e-commerce platform built with Laravel featuring full CRUD operatio
 
 ---
 
+Live Demo
+
+🔗 Live Website: https://gngtexint.com/
+
 ## Table of Contents
 
 - [Requirements](#requirements)
