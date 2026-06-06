@@ -8,8 +8,6 @@ A simplified e-commerce platform built with Laravel featuring full CRUD operatio
 
 ## Live Demo
 
-### Explore the dashboard in action
-
 <a href="https://gngtexint.com/" target="_blank">
   <img src="https://img.shields.io/badge/Visit%20Live%20Website-0EA5E9?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Visit Live Website">
 </a>
@@ -19,6 +17,7 @@ A simplified e-commerce platform built with Laravel featuring full CRUD operatio
 `Products` &nbsp;&bull;&nbsp; `Categories` &nbsp;&bull;&nbsp; `Subcategories` &nbsp;&bull;&nbsp; `CRUD Dashboard`
 
 </div>
+
 
 ## Table of Contents
 
@@ -36,10 +35,10 @@ A simplified e-commerce platform built with Laravel featuring full CRUD operatio
 
 ## Requirements
 
-- PHP >= 8.1
+- PHP >= 8.3
 - Composer
 - MySQL / MariaDB
-- Laravel 10.x or 11.x
+- Laravel >= 11.x 
 
 ---
 
