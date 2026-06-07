@@ -49,24 +49,22 @@ A simplified e-commerce platform built with Laravel featuring full CRUD operatio
 composer create-project laravel/laravel shopnest
 cd shopnest
 
-# 2. Copy all provided source files into the project
-
-# 3. Configure environment
+# 2. Configure environment
 cp .env.example .env
 php artisan key:generate
 
-# 4. Edit .env — set your database credentials
+# 3. Edit .env — set your database credentials
 DB_DATABASE=shopnest
 DB_USERNAME=root
 DB_PASSWORD=
 
-# 5. Run migrations
+# 4. Run migrations
 php artisan migrate
 
-# 6. Create image upload directory
+# 5. Create image upload directory
 mkdir -p public/uploads/products
 
-# 7. Serve
+# 6. Serve
 php artisan serve
 ```
 
